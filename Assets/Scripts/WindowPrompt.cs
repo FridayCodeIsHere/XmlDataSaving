@@ -8,19 +8,23 @@ namespace XmlDataSave
     {
         private Text _promptText;
         private Animator _animator;
-        private void Start()
+        private void Awake()
         {
             _promptText = GetComponentInChildren<Text>();
             _animator = GetComponent<Animator>();
         }
         private void OnEnable()
         {
-            GameHelper.SaveDataIsNull += ShowPrompt;
+            GameHelper.ShowDataState += ShowPrompt;
+        }
+
+        private void OnDisable()
+        {
+            GameHelper.ShowDataState -= ShowPrompt;
         }
 
         private void ShowPrompt(string message, float delay)
         {
-            Debug.Log("Show Prompt");
             _promptText.text = message;
             _animator.SetTrigger("Show");
             Invoke(nameof(HidePrompt), delay);
@@ -28,7 +32,6 @@ namespace XmlDataSave
 
         private void HidePrompt()
         {
-            Debug.Log("Hide Prompt");
             _animator.SetTrigger("Hide");
         }
     }

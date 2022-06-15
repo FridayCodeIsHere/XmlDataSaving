@@ -10,7 +10,7 @@ namespace XmlDataSave
     public class GameHelper : MonoBehaviour
     {
         public delegate void WindowPrompt(string message, float Delay);
-        public static WindowPrompt SaveDataIsNull;
+        public static WindowPrompt ShowDataState;
         public List<SaveableObject> Objects = new List<SaveableObject>();
         [SerializeField] private GameObject _defaultLevel;
         private string _pathSave;
@@ -59,7 +59,6 @@ namespace XmlDataSave
         {
             XElement root = new XElement("root");
 
-            //Objects.ForEach(obj => root.Add(obj.GetElement()));
             foreach (SaveableObject obj in Objects)
             {
                 root.Add(obj.GetElement());
@@ -69,6 +68,8 @@ namespace XmlDataSave
 
             XDocument saveDoc = new XDocument(root);
             File.WriteAllText(_pathSave, saveDoc.ToString());
+            ShowDataState?.Invoke("Save data...", 1f);
+
         }
 
         public void Load()
@@ -83,7 +84,7 @@ namespace XmlDataSave
             }
             else
             {
-                SaveDataIsNull?.Invoke("Save data doesn't exists", 1f);
+                ShowDataState?.Invoke("Save data doesn't exists", 1f);
             }
         }
 
